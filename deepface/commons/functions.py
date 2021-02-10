@@ -211,7 +211,8 @@ def detect_face(img, detector_backend = 'opencv', grayscale = False, enforce_det
 		
 		else: #if no face detected
 	
-			if enforce_detection != True:			
+			if enforce_detection != True:	
+				print("no face detected.")
 				return img
 	
 			else:
