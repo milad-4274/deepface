@@ -179,6 +179,7 @@ def load_image(img):
 		img = loadBase64Img(img)
 		
 	elif exact_image != True: #image path passed as input
+		# print(img,"image path")
 		if os.path.isfile(img) != True:
 			raise ValueError("Confirm that ",img," exists")
 		

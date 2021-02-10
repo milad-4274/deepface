@@ -137,7 +137,7 @@ def verify(img1_path, img2_path = '', model_name = 'VGG-Face', distance_metric =
 			ensemble_features = []
 			
 			for i in  model_names:
-				custom_model = model[i]
+				custom_model = models[i]
 				
 				#decide input shape
 				input_shape = functions.find_input_shape(custom_model)	
@@ -175,8 +175,7 @@ def verify(img1_path, img2_path = '', model_name = 'VGG-Face', distance_metric =
 						distance = dst.findEuclideanDistance(dst.l2_normalize(img1_representation), dst.l2_normalize(img2_representation))
 					else:
 						raise ValueError("Invalid distance_metric passed - ", distance_metric)
-					
-					distance = np.float64(distance) #causes trobule for euclideans in api calls if this is not set (issue #175)
+
 					#----------------------
 					#decision
 					
@@ -601,11 +600,10 @@ def find(img_path, db_path, model_name ='VGG-Face', distance_metric = 'cosine', 
 				#--------------------------------
 				#decide input shape
 				input_shape = functions.find_input_shape(custom_model)	
-				input_shape_x = input_shape[0]; input_shape_y = input_shape[1]
 				
 				#--------------------------------
 				
-				img = functions.preprocess_face(img = img_path, target_size = (input_shape_y, input_shape_x)
+				img = functions.preprocess_face(img = img_path, target_size = input_shape
 					, enforce_detection = enforce_detection
 					, detector_backend = detector_backend)
 					

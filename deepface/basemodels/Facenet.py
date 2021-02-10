@@ -536,16 +536,20 @@ def loadModel(url = 'https://drive.google.com/uc?id=1971Xk5RwedbudGgTIrGAL4F7Aif
 	#-----------------------------------
 	
 	home = str(Path.home())
+
+	output = home+'/.deepface/weights/facenet_weights.h5'
+	here = os.path.dirname(os.path.realpath(__file__))
+	output = here + '/weights/facenet_weights.1.h5'
 	
-	if os.path.isfile(home+'/.deepface/weights/facenet_weights.h5') != True:
+	if os.path.isfile(output) != True:
 		print("facenet_weights.h5 will be downloaded...")
 		
-		output = home+'/.deepface/weights/facenet_weights.h5'
+		# output = home+'/.deepface/weights/facenet_weights.h5'
 		gdown.download(url, output, quiet=False)
 	
 	#-----------------------------------
 	
-	model.load_weights(home+'/.deepface/weights/facenet_weights.h5')
+	model.load_weights(output)
 	
 	#-----------------------------------
 	

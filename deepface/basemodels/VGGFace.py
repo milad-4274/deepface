@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 import gdown
 
+
 import tensorflow as tf
 tf_version = int(tf.__version__.split(".")[0])
 
@@ -71,6 +72,11 @@ def loadModel(url = 'https://drive.google.com/uc?id=1CPSeum3HpopfomUEK1gybeuIVoe
 	
 	home = str(Path.home())
 	output = home+'/.deepface/weights/vgg_face_weights.h5'
+
+	here = os.path.dirname(os.path.realpath(__file__))
+
+
+	output = here + '/weights/vgg_face_weights.h5'
 	
 	if os.path.isfile(output) != True:
 		print("vgg_face_weights.h5 will be downloaded...")		

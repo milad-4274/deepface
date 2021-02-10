@@ -1,0 +1,8 @@
+* best models accordig to LFW dataset:
+    - FaceNet 99.65
+    - ArcFace 99.40
+    - Dlib 99.38
+    - VGGFace 98.78
+
+    - OpenFace 93.8
+    
