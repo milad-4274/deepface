@@ -1,3 +1,4 @@
+# from application.app.folder.file import func_name
 import os
 import numpy as np
 import pandas as pd
@@ -14,7 +15,17 @@ import subprocess
 import bz2
 from deepface.commons import distance
 from mtcnn import MTCNN #0.1.0
-from RetinaFaceAntiCov.retinaface_cov import RetinaFaceCoV
+import sys
+import os
+import logging
+
+logging.basicConfig(filename='detection.log', level=logging.DEBUG)
+
+dir_path = os.path.dirname(os.path.realpath(__file__))
+sys.path.insert(1, dir_path+'/RetinaFaceAntiCov')
+
+
+from retinaface_cov import RetinaFaceCoV
 
 import tensorflow as tf
 tf_version = int(tf.__version__.split(".")[0])
@@ -138,7 +149,8 @@ def initialize_detector(detector_backend):
 		
 	elif detector_backend == 'retina':
 		# face_detector = MTCNN()
-		face_detector = RetinaFaceCoV('./model/mnet_cov2', 0, gpuid, 'net3l')
+		face_detector = RetinaFaceCoV(
+			'deepface/commons/RetinaFaceAntiCov/model/mnet_cov2', 0, 0, 'net3l')
 
 
 def initializeFolder():
@@ -320,7 +332,7 @@ def detect_face(img, detector_backend = 'opencv', grayscale = False, enforce_det
 				raise ValueError("Face could not be detected. Please confirm that the picture is a face photo or consider to set enforce_detection param to False.")
 	
 	elif detector_backend == 'retina':
-    	return get_retina(img,'face')
+		return get_retina(img, enforce_detection,'face')
 	
 	else:
 		detectors = ['opencv', 'ssd', 'dlib', 'mtcnn','retina']
@@ -448,11 +460,15 @@ def align_face(img, detector_backend = 'opencv'):
 		return img #return img anyway
 	
 	elif detector_backend == "retina":
-    	landmark = get_retina(img,'landmark')
-		left_eye = tuple(landmark[0][0],landmark[0][1])
-		right_eye = tuple(landmark[1][0],landmark[1][1])
-		img = alignment_procedure(img, left_eye, right_eye)
-		return img
+		landmark = get_retina(img,out='landmark')
+		if landmark[0]:
+			landmark = landmark[1]
+			left_eye = (landmark[0][0],landmark[0][1])
+			right_eye = (landmark[1][0],landmark[1][1])
+			img = alignment_procedure(img, left_eye, right_eye)
+			return img
+		else:
+			return img
 	
 def preprocess_face(img, target_size=(224, 224), grayscale = False, enforce_detection = True, detector_backend = 'opencv'):
 	
@@ -504,8 +520,8 @@ def find_input_shape(model):
 	
 	return input_shape
 	
-def get_retina(img,out='face'):
-   	img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+def get_retina(img,enforce_detection=False,out='face'):
+	img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 	thresh = 0.9
 	flip = True
 	faces, landmarks = face_detector.detect(img_rgb, thresh, do_flip=flip)
@@ -518,7 +534,7 @@ def get_retina(img,out='face'):
 				winner = i
 		
 		if out == 'face':
-    		face = faces[winner]
+			face = faces[winner]
 			box = face[0:4].astype(np.int)
 			# detection = detections[0]
 			x1, y1, x2, y2 = box
@@ -527,9 +543,11 @@ def get_retina(img,out='face'):
 		elif out == 'landmark':
     		
 			landmark = landmarks[winner].astype(np.int)
-			return landmark
-
+			return [True, landmark]
+	elif out == "landmark":
+		return [False]
 	else:  # if no face detected
+		logging.info("face not detected")
 		if not enforce_detection:
 			print("face not found")
 			return img
