@@ -30,7 +30,7 @@ for i in range(1,121):
         gpath = osp.join(path, gallery)
         ppath = osp.join(path, img)
         # print(gpath,ppath,"pgpath")
-        res = DeepFace.verify(gpath, ppath,enforce_detection=False)
+        res = DeepFace.verify(gpath, ppath,enforce_detection=False,gray=True)
         print(img, res)
 
 

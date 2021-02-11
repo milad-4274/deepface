@@ -49,7 +49,7 @@ def build_model(model_name):
 		raise ValueError('Invalid model_name passed - {}'.format(model_name))
 
 def verify(img1_path, img2_path = '', model_name = 'VGG-Face', distance_metric = 'cosine', 
-		   model = None, enforce_detection = True, detector_backend = 'mtcnn'):	
+		   model = None, enforce_detection = True, detector_backend = 'mtcnn',gray=False):	
 	
 	"""
 	This function verifies an image pair is same person or different persons.	
@@ -149,12 +149,14 @@ def verify(img1_path, img2_path = '', model_name = 'VGG-Face', distance_metric =
 				img1 = functions.preprocess_face(img=img1_path
 					, target_size=(input_shape_y, input_shape_x)
 					, enforce_detection = enforce_detection
-					, detector_backend = detector_backend)
+					, detector_backend = detector_backend
+					, grayscale=gray)
 				
 				img2 = functions.preprocess_face(img=img2_path
 					, target_size=(input_shape_y, input_shape_x)
 					, enforce_detection = enforce_detection
-					, detector_backend = detector_backend)
+					, detector_backend = detector_backend
+					, grayscale=gray)
 				
 				#----------------------
 				#find embeddings
