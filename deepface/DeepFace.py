@@ -561,7 +561,14 @@ def find(img_path, db_path, model_name ='VGG-Face', distance_metric = 'cosine', 
 								, enforce_detection = enforce_detection
 								, detector_backend = detector_backend)
 					
-					representation = custom_model.predict(img)[0,:]
+					img2 = np.flip(img, 1)
+
+					
+					representation1 = custom_model.predict(img)[0,:]
+					representation2 = custom_model.predict(img2)[0,:]
+
+					representation = (representation1 + representation2)/2 
+
 					print(representation)
 					print(representation.shape)
 					print("thisisrep")
@@ -611,8 +618,16 @@ def find(img_path, db_path, model_name ='VGG-Face', distance_metric = 'cosine', 
 				img = functions.preprocess_face(img = img_path, target_size = input_shape
 					, enforce_detection = enforce_detection
 					, detector_backend = detector_backend)
+
+				img2 = np.flip(img, 1)
+
+
+				target_representation1 = custom_model.predict(img)[0,:]
+				target_representation2 = custom_model.predict(img2)[0,:]
+
+				target_representation = (target_representation1 + target_representation2)/2
 					
-				target_representation = custom_model.predict(img)[0,:]
+				# target_representation = custom_model.predict(img)[0,:]
 				
 				for k in metric_names:
 					distances = []
