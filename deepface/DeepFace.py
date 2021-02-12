@@ -562,6 +562,9 @@ def find(img_path, db_path, model_name ='VGG-Face', distance_metric = 'cosine', 
 								, detector_backend = detector_backend)
 					
 					representation = custom_model.predict(img)[0,:]
+					print(representation)
+					print(representation.shape)
+					print("thisisrep")
 					instance.append(representation)
 				
 				#-------------------------------
